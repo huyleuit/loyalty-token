@@ -1,0 +1,14 @@
+name: loyalty-token
+
+vyper:
+  version: 0.3.10
+  evm_version: istanbul
+
+compile:
+  output_extra:
+    - ABI
+
+node:
+  ethereum:
+    sepolia:
+      uri: ${SEPOLIA_RPC_URL}

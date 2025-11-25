@@ -1,0 +1,27 @@
+# IPFS Integration Requirements
+
+# Pinata (recommended IPFS service)
+requests>=2.31.0
+
+# Alternative: Direct IPFS client
+ipfshttpclient>=0.8.0a2
+
+# For PDF generation (certificates)
+reportlab>=4.0.7
+pypdf>=3.17.0
+
+# For QR code generation (in certificates)
+qrcode[pil]>=7.4.2
+
+# Image processing
+Pillow>=10.1.0
+
+# Existing dependencies
+web3>=6.11.0
+python-dotenv>=1.0.0
+flask>=3.0.0
+
+# Testing
+pytest>=7.4.3
+eth-ape>=0.7.0
+

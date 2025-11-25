@@ -1,0 +1,11 @@
+{
+  "chainId": 11155111,
+  "contracts": {
+    "LoyaltyToken": {
+      "address": "0x53B662608d30318b3476A74666A56C91F39597AA"
+    },
+    "LoyaltyManager": {
+      "address": "0xCb6c4a5f4E23b1F78384728a75457d1eed5bC7Dd"
+    }
+  }
+}

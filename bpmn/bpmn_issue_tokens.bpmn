@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_IssueTokens" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.41.0">
+  <bpmn:process id="IssueTokens" name="Phát hành Token Thưởng" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_Issue" name="Bắt đầu phát hành token">
+      <bpmn:outgoing>Flow_I1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_CheckOwner_Issue" name="Kiểm tra quyền Owner">
+      <bpmn:incoming>Flow_I1</bpmn:incoming>
+      <bpmn:outgoing>Flow_I2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_IsOwner_Issue" name="Là Owner?">
+      <bpmn:incoming>Flow_I2</bpmn:incoming>
+      <bpmn:outgoing>Flow_Yes_Owner_Issue</bpmn:outgoing>
+      <bpmn:outgoing>Flow_No_Owner_Issue</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_NotOwner_Issue" name="Không có quyền">
+      <bpmn:incoming>Flow_No_Owner_Issue</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_CheckCustomerRegistered" name="Kiểm tra khách hàng đã đăng ký">
+      <bpmn:incoming>Flow_Yes_Owner_Issue</bpmn:incoming>
+      <bpmn:outgoing>Flow_I3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_CustomerRegistered" name="Khách hàng đã đăng ký?">
+      <bpmn:incoming>Flow_I3</bpmn:incoming>
+      <bpmn:outgoing>Flow_Yes_Customer</bpmn:outgoing>
+      <bpmn:outgoing>Flow_No_Customer</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_CustomerNotRegistered" name="Khách hàng chưa đăng ký">
+      <bpmn:incoming>Flow_No_Customer</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_IssueTokensOnChain" name="Phát hành Token trên Blockchain (issueTokens)">
+      <bpmn:incoming>Flow_Yes_Customer</bpmn:incoming>
+      <bpmn:outgoing>Flow_I4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_MintTokens" name="Mint Token (mint)">
+      <bpmn:incoming>Flow_I4</bpmn:incoming>
+      <bpmn:outgoing>Flow_18i5g68</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateThrowEvent id="Event_TokensMinted" name="Sự kiện: Transfer (mint)">
+      <bpmn:incoming>Flow_18i5g68</bpmn:incoming>
+      <bpmn:outgoing>Flow_I6</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="EndEvent_TokensIssued" name="Phát hành token thành công">
+      <bpmn:incoming>Flow_I6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_I1" sourceRef="StartEvent_Issue" targetRef="Task_CheckOwner_Issue" />
+    <bpmn:sequenceFlow id="Flow_I2" sourceRef="Task_CheckOwner_Issue" targetRef="Gateway_IsOwner_Issue" />
+    <bpmn:sequenceFlow id="Flow_Yes_Owner_Issue" name="Là Owner" sourceRef="Gateway_IsOwner_Issue" targetRef="Task_CheckCustomerRegistered" />
+    <bpmn:sequenceFlow id="Flow_I3" sourceRef="Task_CheckCustomerRegistered" targetRef="Gateway_CustomerRegistered" />
+    <bpmn:sequenceFlow id="Flow_Yes_Customer" name="Đã đăng ký" sourceRef="Gateway_CustomerRegistered" targetRef="Task_IssueTokensOnChain" />
+    <bpmn:sequenceFlow id="Flow_No_Customer" name="Chưa đăng ký" sourceRef="Gateway_CustomerRegistered" targetRef="EndEvent_CustomerNotRegistered" />
+    <bpmn:sequenceFlow id="Flow_I4" sourceRef="Task_IssueTokensOnChain" targetRef="Task_MintTokens" />
+    <bpmn:sequenceFlow id="Flow_I6" sourceRef="Event_TokensMinted" targetRef="EndEvent_TokensIssued" />
+    <bpmn:sequenceFlow id="Flow_No_Owner_Issue" name="Không phải Owner" sourceRef="Gateway_IsOwner_Issue" targetRef="EndEvent_NotOwner_Issue" />
+    <bpmn:sequenceFlow id="Flow_18i5g68" sourceRef="Task_MintTokens" targetRef="Event_TokensMinted" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_IssueTokens">
+    <bpmndi:BPMNPlane id="BPMNPlane_IssueTokens" bpmnElement="IssueTokens">
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_IsOwner_Issue" bpmnElement="Gateway_IsOwner_Issue" isMarkerVisible="true">
+        <dc:Bounds x="450" y="113" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="448" y="89" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_Issue" bpmnElement="StartEvent_Issue">
+        <dc:Bounds x="182" y="120" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="163" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_CheckOwner_Issue" bpmnElement="Task_CheckOwner_Issue">
+        <dc:Bounds x="270" y="98" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_NotOwner_Issue" bpmnElement="EndEvent_NotOwner_Issue">
+        <dc:Bounds x="457" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="435" y="275" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_CheckCustomerRegistered" bpmnElement="Task_CheckCustomerRegistered">
+        <dc:Bounds x="570" y="98" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_MintTokens" bpmnElement="Task_MintTokens">
+        <dc:Bounds x="1023" y="98" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_CustomerRegistered" bpmnElement="Gateway_CustomerRegistered" isMarkerVisible="true">
+        <dc:Bounds x="715" y="113" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="702" y="75.5" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_CustomerNotRegistered" bpmnElement="EndEvent_CustomerNotRegistered">
+        <dc:Bounds x="722" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="717" y="275" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_IssueTokensOnChain" bpmnElement="Task_IssueTokensOnChain">
+        <dc:Bounds x="850" y="98" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_TokensIssued" bpmnElement="EndEvent_TokensIssued">
+        <dc:Bounds x="1292" y="120" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1270" y="163" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Event_TokensMinted" bpmnElement="Event_TokensMinted">
+        <dc:Bounds x="1192" y="120" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1167" y="166" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_I1_di" bpmnElement="Flow_I1">
+        <di:waypoint x="218" y="138" />
+        <di:waypoint x="270" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_I2_di" bpmnElement="Flow_I2">
+        <di:waypoint x="370" y="138" />
+        <di:waypoint x="450" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Yes_Owner_Issue_di" bpmnElement="Flow_Yes_Owner_Issue">
+        <di:waypoint x="500" y="138" />
+        <di:waypoint x="570" y="138" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="516" y="120" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_No_Owner_Issue_di" bpmnElement="Flow_No_Owner_Issue">
+        <di:waypoint x="475" y="163" />
+        <di:waypoint x="475" y="232" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="186" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_I3_di" bpmnElement="Flow_I3">
+        <di:waypoint x="670" y="138" />
+        <di:waypoint x="715" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Yes_Customer_di" bpmnElement="Flow_Yes_Customer">
+        <di:waypoint x="765" y="138" />
+        <di:waypoint x="850" y="138" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="773.0000000000002" y="120" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_No_Customer_di" bpmnElement="Flow_No_Customer">
+        <di:waypoint x="740" y="163" />
+        <di:waypoint x="740" y="232" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="665" y="203" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_I4_di" bpmnElement="Flow_I4">
+        <di:waypoint x="950" y="138" />
+        <di:waypoint x="1023" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_I6_di" bpmnElement="Flow_I6">
+        <di:waypoint x="1228" y="138" />
+        <di:waypoint x="1292" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18i5g68_di" bpmnElement="Flow_18i5g68">
+        <di:waypoint x="1123" y="138" />
+        <di:waypoint x="1192" y="138" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
