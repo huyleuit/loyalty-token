@@ -8,7 +8,7 @@ compile:
   output_extra:
     - ABI
 
-node:
+geth:
   ethereum:
     sepolia:
-      uri: ${SEPOLIA_RPC_URL}
+      uri: $SEPOLIA_RPC_URL
