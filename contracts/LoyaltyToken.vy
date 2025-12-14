@@ -33,7 +33,7 @@ def __init__(_name: String[64], _symbol: String[32], _decimals: uint8):
 # Requirement 1: Business - Issue tokens (owner only)
 @external
 def mint(_to: address, _value: uint256):
-    # Requirement 2: Logic constraint - Only owner can mint
+    # Logic constraint - Only owner can mint
     assert msg.sender == self.owner, "Only owner can mint"
     self.totalSupply += _value
     self.balanceOf[_to] += _value
